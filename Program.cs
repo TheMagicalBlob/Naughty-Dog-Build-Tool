@@ -90,7 +90,7 @@ namespace LRight {
         }
         static byte[] Time(int i) { // Fuck It, Good Enough.
             try {
-                string date = $"{DateTime.Now.GetDateTimeFormats()[107]}";
+                string date = $"{DateTime.Now.GetDateTimeFormats()[106]}";
                 byte[] month = Encoding.ASCII.GetBytes(new char[] { date[3], date[4], date[5], ' ' });
                 byte[] year = Encoding.ASCII.GetBytes(new char[] { date[7], date[8], date[9], date[10] });
                 byte[] time = Encoding.ASCII.GetBytes(date.Substring(date.IndexOf(' '))); time[0] = 0x00;
@@ -395,7 +395,13 @@ ctsm:
             [REGION - Main Functions || Create() Settings File If There Isn't One | Read Settings File And Write() To File\Files If There Is]
             ======================================================================================================================================================================================================================================
             =======================================================================================================================================================================================================================================*/
-
+            int hgh = 0;
+            foreach (string s in DateTime.Now.GetDateTimeFormats()) {
+                REL = false;
+                D($"{hgh}: {s}");
+                hgh++;
+            }
+            R();
             if (DEL)
                 File.Delete($@"{Directory.GetCurrentDirectory()}\Params.blb");
             if (File.Exists($@"{Directory.GetCurrentDirectory()}\Params.blb")) Write();
@@ -1129,12 +1135,19 @@ Int:
                             D($"|{BitConverter.ToString(data)} Written To Exe At 0x{GetEbootAddr()[DebTxt].ToString("X")}");
 
 
-                            if (Encoding.UTF8.GetBytes(flt).Length < 4) {
+                            if (Encoding.UTF8.GetBytes(flt).Length == 3) {
                                 D("|The Float Was Smaller Than Usual, Wrote 0x30");
                                 WS.Position--;
                                 WS.WriteByte(0x30);
                             }
-                            if (bls[4]) WS.WriteByte(0x00);                            
+                            else if (Encoding.UTF8.GetBytes(flt).Length == 1) {
+                                D("|The Float Was Smaller Than Usual, Wrote 0x2E 0x30 0x30");
+                                WS.Position--;
+                                WS.WriteByte(0x2E);
+                                WS.WriteByte(0x30);
+                                WS.WriteByte(0x30);
+                            }
+                            if (bls[4]) WS.WriteByte(0x00);
                             
                             if (bls[5] && !NoDateText(gameE)) {
                                 WS.Position = TE;
@@ -1183,11 +1196,19 @@ Int:
                                 WS.Write(data, 0, data.Length);
                                 D($"|{BitConverter.ToString(data)} Written {path}{pth} At 0x{GetEbootAddr()[DebTxt].ToString("X")}");
 
-                                if (Encoding.UTF8.GetBytes(flt).Length < 4) {
-                                    D("|The FLoat Was Smaller Than Usual, Wrote 0x30");
+                                if (Encoding.UTF8.GetBytes(flt).Length == 3) {
+                                    D("|The Float Was Smaller Than Usual, Wrote 0x30");
                                     WS.Position--;
                                     WS.WriteByte(0x30);
                                 }
+                                else if (Encoding.UTF8.GetBytes(flt).Length == 1) {
+                                    D("|The Float Was Smaller Than Usual, Wrote 0x2E 0x30 0x30");
+                                    WS.Position--;
+                                    WS.WriteByte(0x2E);
+                                    WS.WriteByte(0x30);
+                                    WS.WriteByte(0x30);
+                                }
+
                                 if (bls[4]) WS.WriteByte(0x00);                                
                                 
                                 if (bls[5] && tmpI == 0) {
@@ -1218,12 +1239,19 @@ Int:
                                 }
                                 WS_.Write(data, 0, data.Length);
                                 D($"|{BitConverter.ToString(data)} Written To .sfo At 0x{WS_.Position.ToString("X")}");
-
-                                if (Encoding.UTF8.GetBytes(flt).Length < 4) {
-                                    D("|The FLoat Was Smaller Than Usual, Wrote 0x30");
+                                if (Encoding.UTF8.GetBytes(flt).Length == 3) {
+                                    D("|The Float Was Smaller Than Usual, Wrote 0x30");
                                     WS_.Position--;
                                     WS_.WriteByte(0x30);
                                 }
+                                else if (Encoding.UTF8.GetBytes(flt).Length == 1) {
+                                    D("|The Float Was Smaller Than Usual, Wrote 0x2E 0x30 0x30");
+                                    WS_.Position--;
+                                    WS_.WriteByte(0x2E);
+                                    WS_.WriteByte(0x30);
+                                    WS_.WriteByte(0x30);
+                                }
+
                                 if (bls[4]) WS_.WriteByte(0x00);
                             }
                         }
