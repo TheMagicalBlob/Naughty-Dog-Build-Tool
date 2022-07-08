@@ -29,7 +29,8 @@ namespace LRight {
             s.Append(' ', Console.BufferWidth - num);
             }
             catch (Exception fyck){
-                D($"|{fyck}\n|{num} {Console.BufferWidth}");
+                W($"Exception From: blankspace(int num)\n{fyck}");
+                D($"|{fyck.StackTrace}\n|{num} {Console.BufferWidth}");
                 R();
             }
             return s;
@@ -55,6 +56,7 @@ namespace LRight {
             }
         }
         static ConsoleKey R() { // faster to type, lul
+            if (REL) return ConsoleKey.Clear; 
             return Console.ReadKey(true).Key;
         }
         static string ReadLine(int line) {
@@ -395,13 +397,7 @@ ctsm:
             [REGION - Main Functions || Create() Settings File If There Isn't One | Read Settings File And Write() To File\Files If There Is]
             ======================================================================================================================================================================================================================================
             =======================================================================================================================================================================================================================================*/
-            int hgh = 0;
-            foreach (string s in DateTime.Now.GetDateTimeFormats()) {
-                REL = false;
-                D($"{hgh}: {s}");
-                hgh++;
-            }
-            R();
+
             if (DEL)
                 File.Delete($@"{Directory.GetCurrentDirectory()}\Params.blb");
             if (File.Exists($@"{Directory.GetCurrentDirectory()}\Params.blb")) Write();
@@ -538,7 +534,7 @@ CMain:
                         break;
 
                 }
-                switch (R()) {
+                switch (Console.ReadKey(true).Key) {
                     default:
                         goto CMain;
                     case ConsoleKey.S:
@@ -879,7 +875,7 @@ OneGame:
                     }
                 } catch (Exception tabarnack) {
                     Console.WriteLine(tabarnack);
-                    R(); Console.Clear();
+                    Console.ReadKey(true); Console.Clear();
                     goto CMain;
                 }
 
@@ -1114,7 +1110,7 @@ Int:
                         if (!File.Exists(path + @"\eboot.bin")) {
                             W($"The File Specified (\"{path}\\eboot.bin\") Doesn't Exist.");
                             D($"|Path Length: {len}\n|Data Read: {BitConverter.ToString(data)}");
-                            R();
+                            Console.ReadKey(true);
                         }
                     }
                     if (SetupTypeF != 0x02 && !UCC) {
@@ -1264,7 +1260,7 @@ Int:
                         Console.ReadKey();
                 }
                 catch (Exception tabarnackeh) {
-                    Console.Write(tabarnackeh); R();
+                    Console.Write(tabarnackeh);
                 }
             }
         }
