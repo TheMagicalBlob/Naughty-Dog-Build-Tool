@@ -17,25 +17,18 @@ namespace LRight {
         static void W(string s) {
             Console.WriteLine(s);
         }
-        static bool NoDateText(int g) {
+        static bool NoDateText(int g) { // Check Whether The Game Lacks Any Build Date To Replace (UC2 1.00/1.02 & UC3 1.00/1.02)
             if (g == 0x12 || g == 0x13 || g == 0x14 || g == 0x15)
                 return true;
             else
                 return false;
         }
-        static StringBuilder blankspace(int num) {
+        static StringBuilder blankspace(int num) { // Fill The Rest Of The Current Line With Spaces To Clear Out Excess Characters
             var s = new StringBuilder();
-            try {
             s.Append(' ', Console.BufferWidth - num);
-            }
-            catch (Exception fyck){
-                W($"Exception From: blankspace(int num)\n{fyck}");
-                D($"|{fyck.StackTrace}\n|{num} {Console.BufferWidth}");
-                R();
-            }
             return s;
         }
-        static void D(string s) {
+        static void D(string s) { // Debug Output
             if (REL) return; 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(s);
@@ -72,7 +65,8 @@ namespace LRight {
                         Console.SetCursorPosition(0, line);
                         Console.Write($"{s}{blankspace(s.Length)}");
                         Console.SetCursorPosition(s.Length, line);
-                    } else return "\n";
+                    }
+                    else return "\n";
                 }
                 if (input.Key == ConsoleKey.Delete) {
                     s.Remove(0, s.Length);
@@ -1179,10 +1173,7 @@ Int:
                             data = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
                             Buffer.BlockCopy(Encoding.UTF8.GetBytes(flt), 0, data, 0, flt.Length);
                         }
-                        if (bls[5] && tmpI == 0) {
-                            tmp = Time(gameE);
-                            D($"|Date & Time: {Encoding.ASCII.GetString(tmp)}");
-                        }
+
                         foreach (string pth in paths) {
                             using (FileStream WS = new FileStream(path + pth, FileMode.Open, FileAccess.ReadWrite)) {
                                 gameE = UCG[tmpI];
@@ -1208,7 +1199,8 @@ Int:
 
                                 if (bls[4]) WS.WriteByte(0x00);                                
                                 
-                                if (bls[5] && tmpI == 0) {
+                                if (bls[5] && tmpI == 0) { // Only Writes To UC1, There's No Build Date To Replace In UC2/UC3
+                                    tmp = Time(gameE); D($"|Date & Time: {Encoding.ASCII.GetString(tmp)}");
                                     WS.Position = TE;
                                     WS.Write(tmp, 0, tmp.Length);
                                     if (bls[4]) WS.WriteByte(0x00);       
@@ -1255,7 +1247,7 @@ Int:
                         }
                     }
                     if (bls[2]) {
-                        CW($"Finished! {(flt.Length < 4 ? (flt.Length < 2 ? flt + ".00": flt + "0") : flt)} Written", true);
+                        CW($"Finished! {(flt.Length < 4 ? (flt.Length < 2 ? flt + ".00" : flt + "0") : flt)} Written", true);
                         Thread.Sleep(115*7);
                     }
                     if (!REL)
