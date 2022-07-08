@@ -6,7 +6,7 @@ using System.Threading;
 namespace LRight {
     class Program {
         static bool
-            REL = false
+            REL = true
         ,   DEL = false
         ;
         #region Overloads
@@ -1110,7 +1110,7 @@ Int:
                         if (!File.Exists(path + @"\eboot.bin")) {
                             W($"The File Specified (\"{path}\\eboot.bin\") Doesn't Exist.");
                             D($"|Path Length: {len}\n|Data Read: {BitConverter.ToString(data)}");
-                            Console.ReadKey(true);
+                            R();
                         }
                     }
                     if (SetupTypeF != 0x02 && !UCC) {
@@ -1138,11 +1138,12 @@ Int:
                             }
                             else if (Encoding.UTF8.GetBytes(flt).Length == 1) {
                                 D("|The Float Was Smaller Than Usual, Wrote 0x2E 0x30 0x30");
-                                WS.Position--;
+                                WS.Position = WS.Position = 2;
                                 WS.WriteByte(0x2E);
                                 WS.WriteByte(0x30);
                                 WS.WriteByte(0x30);
                             }
+
                             if (bls[4]) WS.WriteByte(0x00);
                             
                             if (bls[5] && !NoDateText(gameE)) {
@@ -1199,7 +1200,7 @@ Int:
                                 }
                                 else if (Encoding.UTF8.GetBytes(flt).Length == 1) {
                                     D("|The Float Was Smaller Than Usual, Wrote 0x2E 0x30 0x30");
-                                    WS.Position--;
+                                    WS.Position = WS.Position = 2;
                                     WS.WriteByte(0x2E);
                                     WS.WriteByte(0x30);
                                     WS.WriteByte(0x30);
@@ -1235,6 +1236,7 @@ Int:
                                 }
                                 WS_.Write(data, 0, data.Length);
                                 D($"|{BitConverter.ToString(data)} Written To .sfo At 0x{WS_.Position.ToString("X")}");
+
                                 if (Encoding.UTF8.GetBytes(flt).Length == 3) {
                                     D("|The Float Was Smaller Than Usual, Wrote 0x30");
                                     WS_.Position--;
@@ -1242,7 +1244,7 @@ Int:
                                 }
                                 else if (Encoding.UTF8.GetBytes(flt).Length == 1) {
                                     D("|The Float Was Smaller Than Usual, Wrote 0x2E 0x30 0x30");
-                                    WS_.Position--;
+                                    WS_.Position = WS_.Position - 2;
                                     WS_.WriteByte(0x2E);
                                     WS_.WriteByte(0x30);
                                     WS_.WriteByte(0x30);
@@ -1253,7 +1255,7 @@ Int:
                         }
                     }
                     if (bls[2]) {
-                        CW($"Finished! {flt} Written", true);
+                        CW($"Finished! {(flt.Length < 4 ? (flt.Length < 2 ? flt + ".00": flt + "0") : flt)} Written", true);
                         Thread.Sleep(115*7);
                     }
                     if (!REL)
